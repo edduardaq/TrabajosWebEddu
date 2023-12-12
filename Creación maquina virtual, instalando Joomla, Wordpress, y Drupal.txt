@@ -1,0 +1,238 @@
+========================================================================================
+Study Center....: Universidad Técnica Nacional
+Campus..........: Pacífico
+College career..: Tecnologías de Información
+Course..........: ITI-522 - Computación en la Nube
+School period...: 2-2023
+Document........: Install 
+Goals...........: Install Wordpress over Ubuntu 22.04 lts and required services:
+                     - Apache 2 as web server
+			         - MariaDB as database engine
+			         - PHP 8.1.x as CGI 
+Professor.......: Jorge Ruiz (york)
+Student.........: 
+========================================================================================
+
+Step 01 - Create a Virtual Machine
+
+	You must prepare a virtual machine with Ubuntu Server 22.04 between 8 to 16GBs of main memory 
+	and a 30GBs storage unit with dynamic expansion
+	
+	- SSH server
+	- Network Bridged
+	
+
+Step 02 - Update system
+
+	- apt update
+	
+	- apt upgrade (if required)
+	
+	- apt install net-tools
+	
+	- apt install unzip
+	
+	
+Step 03 - Install Apache 2
+
+	- apt install apache2
+	
+	- testing in your favorite web browser
+	
+		http://<server ip>
+	
+
+Step 04 - Install PHP CGI (PHP-8.1)
+
+	- apt -y install lsb-release apt-transport-https ca-certificates software-properties-common
+
+	- apt install curl
+
+	- apt-cache search php8.1   (show available php libraries)
+
+	- apt install php8.1 php8.1-common php8.1-cli libapache2-mod-php8.1 php8.1-fpm php8.1-mysql php8.1-xml php8.1-curl php8.1-mbstring php8.1-zip php8.1-gd php8.1-imagick php8.1-opcache php8.1-intl	
+
+	- 
+ (for testing intalled php version)
+	
+	- nano /etc/apache2/sites-available/000-default.conf
+	
+		- Add the below instruction after 'DocumentRoot /var/www/html'
+		
+			 DirectoryIndex index.php index.html
+			 
+			 
+		- Save changes	 
+	
+	- systemctl restart apache2 (restart apache2 service with php cgi and php configuration)
+	
+	- nano /var/www/html/index.php
+	
+		<?php
+			echo '<h3>Sitio de York</h3>';
+			phpinfo();
+		?> 
+		
+		- Save changes and exit	
+	
+	
+	- testing again
+	
+		http://<server ip>
+
+
+	- Y.U.P.I time
+
+
+Step 05 - Install MariaDB
+
+	- apt update 
+	
+	- apt upgrade (if required)
+	
+	- apt install mariadb-server
+	
+	- mysql_secure_installation	 (for MariaDB configuration)
+	
+		- current password for root..............:
+		- switch to Unix_socket authentication...: n
+		- change the root password...............: y
+		- remove anonymous users?................: y
+		- disallow root login remotely?..........: n
+		- remove test database and access to it?.: n
+		- reload privilege tables now?...........: Y
+
+
+	- Create admin account
+	
+		- mariadb
+		
+		- grant all on *.* to 'admin'@'%' identified by 'eduard' with grant option;
+		
+		- flush privileges;
+		
+		- exit
+		
+
+Step 06 - Install Wordpress
+		
+	- Create wordexpress database
+
+		- mariadb -h localhost -u admin -p
+		
+		- show databases;
+		
+		- create database wordpress charset utf8mb4;
+		
+		- exit
+		
+	- Download wordpress software
+
+		- cd /var/www/html
+		
+		- wget https://wordpress.org/latest.zip
+		
+		- unzip latest.zip
+		
+	- In your web browser 
+
+		- http://<ip server>/wordpress
+		
+		- fill the fields
+		
+		- Into the server (go back to server)
+		
+			- cd wordpress directory
+			
+			- nano wp-config.php
+			
+			- copy from the installation windows, the data configuration
+			
+			- Save changes
+		
+		- Run the installation (web browser)
+		
+			- Site Title...: My Testing Space
+			- Username.....: administrator
+			- Password.....: u&cnn*dy$bSNOyjVlZ
+			- Your email...: ???@est.utn.ac.cr
+			
+			- Discourage search engines from indexing this site ( not checked) 
+
+Step 07 - Y.U.P.I time again
+
+
+
+
+Step 08 - Instalar Drupal
+	Log into the Debian device
+	Run the following commands in a terminal:
+	# update repositories and install any available software updates
+		-sudo apt update
+		-sudo apt upgrade -y
+	# install Apache HTTPD and MySQL
+		-sudo apt-get install apache2 mariadb-server mariadb-client curl
+	# install PHP components
+		-sudo apt install php php-mysql php-cli php-json php-opcache php-gd php-curl php-gd php-mbstring php-xml php-xmlrpc php-soap php-intl php-zip
+	# configure the MySQL database
+		-sudo su
+	mysql_secure_installation
+	Press Enter to login as root
+	Type Y and press Enter to set a root password, type the password twice to confirm
+	Type Y and press Enter to remove anonymous users
+	Type Y and press Enter to disallow root login remotely
+	Type Y and press Enter to remove the test database
+	Type Y and press Enter to reload privilege tables
+	Run the following command to login into MySQL:
+		-mysql -u root -p
+	Authenticate with the root password set earlier
+	Run the following commands to create the Drupal database and database user
+		-CREATE DATABASE drupal DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+		-GRANT ALL ON drupal.* TO 'admin'@'localhost' IDENTIFIED BY 'eduard';
+
+	FLUSH PRIVILEGES;
+	EXIT;
+	exit
+	Continue with the following commands to download and extract Drupal in the Apache webroot
+	# download latest drupal version
+		-sudo wget -O drupal.tar.gz https://www.drupal.org/download-latest/tar.gz
+	# extract drupal.tar.gz
+		-sudo tar xzvf drupal.tar.gz --directory /var/www
+	# rename drupal folder
+		-sudo mv /var/www/drupal* /var/www/drupal
+	# create a new drupal.conf file to configure the site
+		-sudo nano /etc/apache2/sites-available/drupal.conf
+	Paste the following configuration into drupal.conf
+	Alias /drupal "/var/www/drupal/"
+			<Directory /var/www/drupal/>
+    			AllowOverride All
+			</Directory>
+
+	Press CTRL+O, Enter, CTRL+X to write the changes to drupal.conf
+	Continue with the following commands to enable the site and restart Apache:
+	# enable the Drupal site and required PHP modules
+		-sudo a2ensite drupal
+		-sudo a2enmod rewrite
+	# set the owner of the new drupal directory to www-data
+		-sudo chown -R www-data:www-data /var/www/drupal
+	# restart apache2 service
+		-sudo systemctl restart apache2
+	Open a web browser and navigate to http://DNSorIP/drupal
+	The Drupal setup screen should be displayed
+	Select a language > Click Save and continue
+	Select the Standard profile > Click Save and continue
+	Enter the database name, username and password > Click Save and continue
+	Create a site title and Drupal login > Click Install Drupal
+	When the installation completes, enter a site name, email address, username and password > Click Save and continue
+	Welcome to your very own, self-hosted Drupal installation
+
+
+
+
+
+
+
+
+
+
+

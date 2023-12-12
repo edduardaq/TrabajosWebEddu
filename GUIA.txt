@@ -1,0 +1,947 @@
+================================================================================================
+Institucion..: Universidad Tecnica Nacional
+Sede.........: Del Pacífico
+Carrera......: Tecnologías de Información
+Curso........: ITI-712
+Periodo......: 3-2023
+Documento....: Configuración sitio con firebase
+Objetivos....: Crear un proyecto en la nube para mantenimiento de datos con Google Firebase
+Profesor.....: Jorge Ruiz (york)
+Estudiante...:
+================================================================================================
+
+Paso 01 - Instalar Node.js 20.9.0 LTS descargar del siguiente enlace
+
+	https://nodejs.org/en/
+	
+	Una guía rápida de instalación:
+	
+		https://www.youtube.com/watch?v=v0x1Ku5Tgac
+		
+	La instalación debe ser completa, en mi caso no necesité instalar Chocolatey.
+
+	Debe asegurarse que nodejs después de instalado se encuentre en la variable 
+	PATH del sistema operativo (windows), enjecutando dese su consola favorita:
+	[ powershell | cmd ]
+	
+	node --version  o   node -v
+	
+	npm --version --> 9.8.0
+	
+	
+Paso 02 - Comprobar la ejecución de Scripts (abrir powershell como administrador)
+
+	Get-ExecutionPolicy -List
+	
+		- CurrentUser = Undefined (debe corregirse este valor)
+		
+	Set-ExecutionPolicy RemoteSigned -Scope CurrentUser	
+	
+		- Se debe acceptar con Y
+		- Se ejecuta el comando anterior el valor del CurrentUser
+		  debe haber cambiado a RemoteSigned
+		  
+		  
+	Cerramos el PowerShell	  
+		
+
+Paso 03 - Crear un proyecto en Firebase (test01)
+	
+	- Ir al siguiente enlace https://firebase.google.com
+	
+	- Validar que se encuentra autenticado con alguna cuenta de Google
+	
+	- Seleccionar [Ir a la consola]
+	
+	- Agregar proyecto
+	
+		- Nombre del proyecto <test01>    (el sistema agrega un identificador)
+
+		- Presionar el botón de continuar (confirmar uso del proyecto)
+		
+		- Deshabilitar Google Analytics para este proyecto
+		
+		- Presionar el botón de [Crear proyecto] y esperar
+		
+		- Presionar el botón de [Continuar] para ir a la consola del proyecto.
+			
+	
+Paso 04 - Habilitar autenticación
+
+	- Ingresar al proyecto en caso de ser necesario.
+	
+	- Panel izquierdo seleccionar Compilación / Authentication
+
+	- Presionar botón de [Comenzar].
+	
+	- Seleccionar Correo electrónico/contraseña
+	
+		- Habilitar (debe seleccionarse)
+		
+		- Vinculo del correo electrónico (acceso sin contraseña) (sin seleccionar)
+		
+	- Guardar cambios
+		
+
+Paso 05 - Crear base de datos Cloud FireStore
+
+	- Ingresar al proyecto en caso de ser necesario.
+	
+	- Panel izquierdo seleccionar Compilación / FireStore Database
+	
+	- Presionar botón [Crear base de datos]
+
+		- Seleccionar iniciar en modo de producción y [Siguiente]
+		
+		- Seleccionar la zona donde estará ubicada la BD
+			
+			nam5(us-central) (una ves creada la bd, no se puede cambiar su ubicación)			
+		
+		- Presionar el botón de [Habilitar]
+
+
+Pas0 06 - Crear almacén de documentos
+
+	- Ingresar al proyecto en caso de ser necesario.
+	
+	- Panel izquierdo seleccionar Compilación / Storage
+	
+	- Presionar botón [Comenzar]
+	
+		- Seleccionar iniciar en modo de producción y [Siguiente]
+		
+		- Seleccionar la misma zona donde estará ubicada la BD y [Listo]
+		
+	
+	Nota: Eso es todo por el momento del lado del Google Firebase.
+		  Regresamos a la consola del powershell
+		
+		
+Paso 07 - Instalar las herramientas para Firebase en equipo local
+	
+	- Abrir powershell como administrador
+	
+		npm install -g firebase-tools
+	
+	
+Paso 08 - Ubicarse en la carpeta de trabajo
+
+	- Crear una carpeta de trabajo
+	
+		cd 'D:\Documentos\Laboratorios\Firebase' (ejemplo de mi entorno de trabajo)
+		
+		mkdir <test01>
+		
+		cd <test01>
+
+
+Paso 09 - Autenticarse ante Firebase
+	
+	firebase login
+	
+		- Permitir a Firebase colectar información de uso y error: Yes
+		- Eligir cuenta de Google con la que quiere comunicarse
+		- Permitir a Firebase Cli acceder a tu cuenta Google
+
+		
+Paso 10 - Inicializar el proyecto local
+	
+	firebase init
+	
+		- Are you ready to proceed?.........................................: Y (yes)
+	
+		- Which Firebase features do you want to set up for this directory?.: Use barra espaciadora para seleccionar
+			- (*) FireStore..: Configuración de seguridad e indices.
+			- (*) Hosting....: Configuración de archivos...(github opcional).
+			- (*) Storage....: Conguración de las reglas de seguridad
+			
+			Presione Enter para continuar
+			
+		
+		- Project setup
+			- Select use an existing project
+			
+			- Select your project name <test01>
+	
+		
+		- FireStore setup
+			- What file should be used for Firestore Rules?......................: firestore.rules
+			- What file should be used for Firestore indexes?....................: firestore.indexes.json			
+		
+		
+		- Hosting setup
+			- What do you want to use as your public directory?..................: public
+			- Configure as a single-page app (rewrite all urls to /index.html)?..: Y
+			- Set up automatic builds and deploys with GitHub?...................: N
+		
+		
+		- Storage setup
+			-  What file should be used for Storage Rules?.......................: storage.rules
+		
+		
+	ls	(para observar el código creado)
+
+	
+Paso 11 - Subir el proyecto por primera vez
+
+	firebase deploy
+	
+	- Esperar mientras la carga se completa
+	
+	- Puede explorar el producto mediante el enlace Hosting URL: <ruta> / ctrl + click
+
+	- Volver al explorador con la consola de firebase abierta
+	
+		- Seleccionar Compilación / Hosting
+		
+			Seleccionar el dominio de ejecución
+			(debe presentar la página por default del proyecto)
+	
+	
+Paso 12 - Abrir carpeta del proyecto con editor HTML favorito (Visual Code / PhpStorm / Brackets)
+
+	12-01 - Crear en la carpeta raíz del proyecto una subcarpeta llamada back
+			y mover el archivo public/index.html a esta nueva carpeta. (solo el archivo)
+			
+			(se usará como respaldo de las referencias del api de Firebase)
+
+			
+	12-02 - Crear las siguientes carpetas en public
+	
+		public
+			- css
+			- js
+
+			
+	12-03 - Crear la hoja de estilos:
+
+		public/css/style.css
+		
+		/* CSS Document */
+		:root{
+			--primary: #110C0CFF;
+			--light: #FFFFFF;
+			--grey1: #EEEEEE;
+			--grey2: #F0F1F1;
+			--orange: #D6731D;
+			--lblue1: #559EE0;
+			--lblue2: #B4C5E5;
+		}
+
+		*{
+			margin: 0;
+			padding: 0;
+			user-select: none;
+			box-sizing: border-box;
+		}
+
+		.header .navbar {
+			background-color: rgba(255,255,255,0.5) !important;
+		}
+
+		body{
+			padding-top: 70px;
+		}
+
+		.formatDiv{
+			width: 250px;
+			margin-left: auto;
+			margin-right: auto;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+		}
+
+		.imgBlock{
+			height: 150px;
+			width: 150px;
+			margin-right: auto;
+			margin-left: auto;
+		}
+
+		.divAnuncio{
+			background-color: var(--light);
+			border: thin solid var(--lblue1);
+			border-radius: 5px;
+			box-shadow: 2px 2px 5px var(--lblue2);
+			float: left;
+			margin: 8px;
+			padding-top: 5px;
+			text-align: center;
+			width: 160px;
+		}
+	
+	
+	12-04 - Crear las páginas del sitio
+
+		public/index.html
+		public/lista.html
+		public/agregar.html		
+		public/registrar.thml
+		public/login.html
+		
+		- Eliminar el código generado de todas las páginas
+		
+		- Copiar el siguiente código en todas las páginas
+		
+		<!doctype html>
+		<html lang="en">
+		<head>
+			<!-- Visualization environment -->
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+			<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+			<!-- Control environment web application -->
+			<meta http-equiv="pragma" content="no-cache">
+			<meta http-equiv="cache-control" content="no-cache">
+			<meta value="no-cache, no-store, must-revalidate" name="no-chache">
+
+			<!-- Bootstrap CSS -->
+			<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+				  rel="stylesheet"
+				  integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+				  crossorigin="anonymous">
+
+			<!-- Font awesome decoration -->
+			<script src="https://kit.fontawesome.com/2c7bfef965.js" crossorigin="anonymous"></script>
+
+			<!-- Custom decoration -->
+			<title>Welcome to Firebase Hosting</title>
+			<link rel="stylesheet" href="css/style.css">
+
+			<!-- References Firebase libraries -->
+			<!-- update the version number as needed -->
+			<script defer src="/__/firebase/9.17.2/firebase-app-compat.js"></script>
+			<script defer src="/__/firebase/9.17.2/firebase-auth-compat.js"></script>
+			<script defer src="/__/firebase/9.17.2/firebase-database-compat.js"></script>
+			<script defer src="/__/firebase/9.17.2/firebase-firestore-compat.js"></script>
+			<script defer src="/__/firebase/9.17.2/firebase-storage-compat.js"></script>
+
+			<!-- initilized firebase object -->
+			<script defer src="/__/firebase/init.js"></script>
+
+		</head>
+		<body class="container">
+			<header class="header row">
+				<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+					<div class="container-fluid">
+						<a class="navbar-brand">Horoscopo</a>
+						<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+								aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+							<span class="navbar-toggler-icon"></span>
+						</button>
+						<div class="collapse navbar-collapse" id="navbarNavDropdown">
+							<ul class="navbar-nav">
+								<li class="nav-item">
+									<a class="nav-link active" aria-current="page" href="index.html">Inicio</a>
+								</li>
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink_01" role="button" data-bs-toggle="dropdown"
+									   aria-expanded="false">
+										Horoscopo
+									</a>
+									<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_01">
+										<li><a class="dropdown-item" href="lista.html">Lista de signos</a></li>
+										<li><a class="dropdown-item" href="agregar.html">Agregar signo</a></li>
+									</ul>
+								</li>
+								<li class="nav-item dropdown">
+									<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink_02" role="button" data-bs-toggle="dropdown"
+									   aria-expanded="false">
+										Usuarios
+									</a>
+									<ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink_02">
+										<li><a class="dropdown-item" href="registrar.html">Registrar nuevo usuario</a></li>
+										<li><a class="dropdown-item" href="login.html">Autenticar usuario</a></li>
+										<li><a class="dropdown-item" onclick="salir()">Cerrar sesión</a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</nav>
+			</header>
+
+			<main class="row">
+				
+			</main>
+
+			<footer class="row">
+
+			</footer>
+			<!-- Option 1: Bootstrap Bundle with Popper -->
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+					integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+					crossorigin="anonymous"></script>
+		</body>
+		</html>
+	
+		- Recordar guardar los cambios
+
+
+	12-05 - Aplicar los cambios en Firebase
+
+		firebase deploy
+		
+		refrescar web browser con los cambios aplicados
+		
+	
+	12-06 - Modificar página registrar.html
+	
+		- Ubicarse en segmento body / main y agregar siguiente código:
+		
+			<h4>Sign up</h4>
+			<div>
+				<label for="txtNombre">Nombre:</label><br>
+				<input type="text" id="txtNombre"><br><br>
+
+				<label for="txtEmail">Correo electrónico:</label><br>
+				<input type="text" id="txtEmail"><br><br>
+
+				<label for="txtContra">Contraseña:</label><br>
+				<input type="text" id="txtContra">
+				<br><br>
+				<input type="button" id="btnInsUser" name="btnInsUser" value="Insertar Usuario">
+			</div>
+		
+		
+		- Ubicarse antes del fin del body </body> y agregar: 
+		
+			<!-- load js code to register a new user  -->
+			<script defer src="js/users/signup.js"></script>
+		
+		
+		- Guardar documento
+	
+	
+	12-07 - JavaScript para registro de usuarios
+	
+		- Crear carpeta js/users
+	
+		- Crear archivo js/users/signup.js
+		
+		- Copiar siguiente código:
+		
+			// JavaScript Document
+			// create local database firestore variable
+			var db = firebase.apps[0].firestore();
+			var auth = firebase.apps[0].auth();
+
+			// create local from webpage inputs
+			const txtNombre = document.querySelector('#txtNombre');
+			const txtEmail = document.querySelector('#txtEmail');
+			const txtContra = document.querySelector('#txtContra');
+
+			// create local insert button
+			const btnInsUser = document.querySelector('#btnInsUser');
+
+			// assign button listener
+			btnInsUser.addEventListener('click', function () {
+				auth.createUserWithEmailAndPassword(txtEmail.value, txtContra.value)
+					.then((userCredential) => {
+						const user = userCredential.user;
+						db.collection("datosUsuarios").add({
+							"idemp": user.uid,
+							"usuario": txtNombre.value,
+							"email": user.email
+						}).then(function (docRef) {
+							alert("Usuario agregado satisfactoriamente");
+							limpiar();
+						}).catch(function (FirebaseError) {
+							alert("Error al registrar datos del usuario." + FirebaseError);
+						});
+					})
+					.catch((error) => {
+						alert("Error al agregar el nuevo usuario: " + error.message);
+					});
+			});
+			
+			function limpiar(){
+				txtNombre.value = '';
+				txtEmail.value = '';
+				txtContra.value = '';
+				txtNombre.focus();
+			}
+		
+		- Salvar los cambios
+		
+	
+	12-08 - Módificando las reglas de acceso al FireStore (firestore.rules)
+	
+		- El archivo se encuentra en la raíz del proyecto.
+	
+		- Sustituir el código actual por el siguiente:
+		
+			rules_version = '2';
+			service cloud.firestore {
+			  match /databases/{database}/documents {
+				match /{datosUsuarios}/{document=**}{
+					allow read:if true;
+					allow create: if request.resource.data.idemp is string &&
+									 request.resource.data.usuario is string &&
+									 request.resource.data.email is string;
+					allow update: if true;
+					allow delete: if false;
+				}
+			  }
+			}
+	
+		- Salvar los cambios
+	
+	
+	12-09 - Probar cambios
+
+		- Publicar los cambios 
+		
+			firebase deploy
+			
+		- Actualizar el web browser y probar la página de registro de usuarios
+
+		- Verificar cambios en la consola del proyecto en Firebase
+		
+			- Authentication
+				- debe existir un nuevo usuario
+				
+			- Firestore
+				- debe existir la colección llamada datosUsuarios
+				- debe existir un documento con los datos del usuario
+				- debe existir cambios en las reglas de acceso
+		
+			
+	12-10 - JavaScript para validar usuario autenticado
+	
+		- Crear archivo js/users/islogin.js
+		
+		- Copiar siguiente código:
+	
+			// JavaScript Document
+			// validate that user is log-in
+			var auth = firebase.apps[0].auth();
+
+			function validar() {
+				var uid = -1
+				//const user = auth.currentUser;
+				auth.onAuthStateChanged((user) => {
+					if (user) {
+						uid = user.uid;
+					} else {
+						document.location.href = 'login.html';
+					}
+				});
+				return uid;
+			}
+
+			// close current session
+			function salir(){
+				auth.signOut().then(() => {
+					document.location.href ='login.html';
+				}).catch((error)=>{
+				   alert('Error al cerrar la sesión: ' + error.message);
+				});
+			}
+
+		- Salvar los cambios
+
+
+	12-11 - Aplicar validación de usuarios 
+	
+		- Modificar las siguientes paginas
+			
+			index.html
+			lista.html
+			agregar.html
+		
+		- Aplicar los siguientes cambios
+		
+			- Al final del head de cada página agregar:
+			
+				<!-- calling user authentication functions -->
+				<script defer src="js/users/islogin.js"></script>
+	
+	
+			- Agregar cambio en el la etiqueta body de cada página.
+	
+				<body class="container" onload="validar()">
+	
+	
+		- Guardar todos los cambios.
+		
+		- Publicar los cambios ante Firebase.
+		
+		- Probar los cambios en el sitio.
+		
+			- Seleccionar menu Usuarios / Cerrar sesión
+				(debe enviarle a la página de login.html)
+				
+			- Trate de ubicarse en:
+				Inicio
+				Horoscopo / Lista de Signos
+				Horoscopo / Agregar signo
+			 
+				(todos estos accesos deben enviarle a login.html)
+				
+			- Recuerde validar este comportamiento en la URL del sitio.
+	
+	
+	12-12 - Modificar página login.html 
+	
+		- Ubicarse en segmento body / main y agregar siguiente código:
+		
+			<h4>Autenticando Usuario</h4>
+			<div>
+				<label for="txtEmail">Correo electrónico:</label><br>
+				<input type="text" id="txtEmail" required autofocus><br><br>
+
+				<label for="txtContra">Contraseña:</label><br>
+				<input type="password" id="txtContra" required>
+				<br><br>
+				<input type="button" id="btnLogin" name="btnLogin" value="Auntenticar Usuario">
+			</div>
+	
+	
+		- Ubicarse antes del fin del body </body> y agregar: 
+		
+			<!-- load js code to log in user  -->
+			<script defer src="js/users/login.js"></script>
+		
+		
+		- Guardar documento
+	
+	
+	12-13 - JavaScript para autenticar usuario
+	
+		- Crear archivo js/users/login.js
+		
+		- Copiar siguiente código:
+		
+			// JavaScript Document
+			// create local database firestore variable
+			var db = firebase.apps[0].firestore();
+			var auth = firebase.apps[0].auth();
+
+			// create local from webpage inputs
+			const txtEmail = document.querySelector('#txtEmail');
+			const txtContra = document.querySelector('#txtContra');
+
+			// create local insert button
+			const btnLogin = document.querySelector('#btnLogin');
+
+			// assign button listener
+			btnLogin.addEventListener('click', function () {
+				auth.signInWithEmailAndPassword(txtEmail.value, txtContra.value)
+					.then((userCredential) => {
+						const user = userCredential.user;
+						const dt = new Date();
+						db.collection("datosUsuarios").where('idemp', '==', user.uid).get()
+							.then(function (docRef) {
+								docRef.forEach(function (doc){
+									doc.ref.update({ultAcceso:dt}).then(function (){
+										document.location.href = 'index.html';
+									});
+								});
+							})
+							.catch(function (FirebaseError) {
+								var mensaje = "Error adding document: " + FirebaseError
+								alert(mensaje);
+							});
+					})
+					.catch((error) => {
+						var mensaje = "Error user access: " + error.message;
+						alert(mensaje);
+					});
+			});
+
+		- Guardar todos los cambios.
+		
+		- Publicar los cambios ante Firebase.
+		
+		- Probar los cambios en el sitio.
+		
+			- Probar la página loging.html con el usuario que registró.
+			
+			- Trate de ubicarse en:
+				Inicio
+				Horoscopo / Lista de Signos
+				Horoscopo / Agregar signo
+			 
+				(todos estos accesos deben ir a su correspondiente página)
+				
+			- Recuerde validar este comportamiento en la URL del sitio.
+			
+		
+	12-14 - Modificar página agregar.html 
+	
+		- Ubicarse en segmento body / main y agregar siguiente código:
+		
+			<h4 class="formatHead">Almacenar Imágenes con datos</h4>
+			<div>
+				<label for="txtPosic">Posición:</label><br>
+				<input type="text" id="txtPosic"><br><br>
+			
+				<label for="txtSigno">Signo:</label><br>
+				<input type="text" id="txtSigno"><br><br>
+
+				<label for="txtRango">Rango:</label><br>
+				<input type="text" id="txtRango"><br><br>
+
+				<label for="txtArchi">File:</label><br>
+				<input type="file" id="txtArchi">
+				<br><br>
+				<input type="button" id="btnLoad" name="btnLoad" value="Insert">
+			</div>
+	
+	
+		- Ubicarse antes del fin del body </body> y agregar: 
+		
+			<!-- load js code to storage data  -->
+			<script defer src="js/zodiac/addsigno.js"></script>
+		
+		
+		- Guardar documento	
+		
+		
+	12-15 - JavaScript para registrar signos zodiacales
+	
+		- Crear archivo js/zodiac/addsigno.js
+		
+		- Copiar siguiente código:	
+		
+			// JavaScript Document
+			var db = firebase.apps[0].firestore();
+			var container = firebase.apps[0].storage().ref();
+
+			const txtPosic = document.querySelector('#txtPosic');
+			const txtSigno = document.querySelector('#txtSigno');
+			const txtRango = document.querySelector('#txtRango');
+			const txtArchi = document.querySelector('#txtArchi');
+			const btnLoad  = document.querySelector('#btnLoad');
+
+			btnLoad.addEventListener('click', function(){
+				const archivo = txtArchi.files[0];
+				const nomarch = archivo.name;
+				if(archivo == null){
+					alert('Debe seleccionar una imagen');
+				}else{
+					const metadata = {
+						contentType : archivo.type
+					}
+					const subir = container.child('zodiaco/'+nomarch).put(archivo, metadata);
+					subir
+						.then(snapshot => snapshot.ref.getDownloadURL())
+						.then( url =>{
+							db.collection("datosZodiaco").add({
+								"posic" : parseInt(txtPosic.value),
+								"signo" : txtSigno.value,
+								"rango" : txtRango.value,
+								"url"   : url
+							}).then(function(docRef) {
+								alert("ID del registro: " + docRef.id);
+								limpiar();
+							}).catch(function(FirebaseError) {
+								alert("Error al subir la imagen: " + FirebaseError);
+							});
+						});
+				}
+			});
+
+			function limpiar(){
+				txtPosic.value = ''
+				txtSigno.value = '';
+				txtRango.value = '';
+				txtArchi.value = '';
+				txtPosic.focus();
+			}
+
+		
+		- Guardar documento	
+		
+		
+	12-16 - Módificando las reglas de acceso al FireStore (firestore.rules)
+	
+		- Solo agregue la nueva regla:
+		
+			rules_version = '2';
+			service cloud.firestore {
+			  match /databases/{database}/documents {
+				match /{datosUsuarios}/{document=**}{
+					allow read:if true;
+					allow create: if request.resource.data.idemp is string &&
+									 request.resource.data.usuario is string &&
+									 request.resource.data.email is string;
+					allow update: if true;
+					allow delete: if false;
+				}
+				
+				match /{datosZodiaco}/{document=**}{
+					allow read:if true;
+					allow create: if request.resource.data.posic is int &&
+									 request.resource.data.signo is string &&
+									 request.resource.data.rango is string &&
+								     request.resource.data.url is string;
+					allow update: if false;
+					allow delete: if false;
+				}	
+				
+			  }
+			}
+	
+		- Salvar los cambios
+		
+	
+	12-17 - Probar los cambios
+	
+		- Descargar del campus el archivo imaZodiaco.zip
+		
+		- Utilizar la página agregar.html
+		
+		Posición | Signo       | Fecha           | Símbolo
+		---------+-------------+-----------------+--------------------
+		   1     | Acuario     | Ene/20 - Feb/18 | 01_Acuario.png
+		---------+-------------+-----------------+--------------------
+		   2     | Piscis      | Feb/19 - Mar/20 | 02_Pisis.png
+		---------+-------------+-----------------+--------------------
+		   3     | Aries       | Mar/21 - Abr/19 | 03_Aries.png
+		---------+-------------+-----------------+--------------------
+		   4     | Tauro       | Abr/20 - May/20 | 04_Tauro.png 	
+		---------+-------------+-----------------+--------------------
+		   5     | Geminis     | May/21 - Jun/20 | 05_Geminis.png
+		---------+-------------+-----------------+--------------------
+		   6     | Cancer      | Jun/21 - Jul/22 | 06_Cancer.png
+		---------+-------------+-----------------+--------------------
+		   7     | Leo         | Jul/23 - Ago/22 | 07_Leo.png
+        ---------+-------------+-----------------+--------------------
+		   8     | Virgo       | Ago/23 - Sep/22 | 08_Virgo.png
+        ---------+-------------+-----------------+--------------------
+		   9     | Libra       | Sep/23 - Oct/22 | 09_Libra.png
+		---------+-------------+-----------------+--------------------
+		  10     | Escorpio    | Oct/23 - Nov/21 | 10_Escorpio.png 
+		---------+-------------+-----------------+--------------------
+		  11     | Sagitario   | Nov/22 - Dic/21 | 11_Sagitario.png
+		---------+-------------+-----------------+--------------------
+		  12     | Capricornio | Dic/22 - Ene/19 | 12_Capricornio.png
+		   
+		
+		- Validar contra la consola del proyecto en Firebase
+		
+			- Storage   (debe ver una carpeta llamada zodiaco, contiendo las imágenes)
+			- FireStore (debe ver la nueva colección datosZodiaco)
+	
+	
+	12-18 - Modificar página lista.html
+	
+		- Ubicarse en segmento body / main y agregar siguiente código:
+	
+			<h4>Recuperando imágenes desde Firebase and Storage Container</h4>
+			<div id="tabla"></div>
+	
+	
+		- Ubicarse antes del fin del body </body> y agregar: 
+		
+			<!-- load js code to recover data from collection and container  -->
+			<script defer src="js/zodiac/lstzodiaco.js"></script>
+	
+	
+		- Guardar cambios
+	
+	
+	12-19 - JavaScript para mostar los signos zodiacales
+	
+		- Crear archivo js/zodiac/lstzodiaco.js
+		
+		- Copiar siguiente código:	
+		
+			var db = firebase.apps[0].firestore();
+
+			const tabla = document.querySelector('#tabla');
+
+			db.collection("datosZodiaco").orderBy('posic', 'asc').get().then(function(query){
+				tabla.innerHTML="";
+				var salida = "";
+				query.forEach(function(doc){
+					salida += '<div class="divAnuncio m-3">'
+						salida += '<div class="imgBlock"><img src="' + doc.data().url +'" width="100%" /></div>'
+						salida += '<div>'+ doc.data().signo + '<br/>'+ doc.data().rango + '</div><br/>'
+					salida += '</div>'
+				})
+				tabla.innerHTML = salida;
+			})
+
+		
+		- Guardar documento
+		
+		- Publicar los cambios 
+		
+		- Probar la página de lista.html
+		
+		
+Paso 13 - Sea feliz lo lograste.
+
+	Y U P I...!
+
+
+==================================================================
+Laboratorio de Firebase
+==================================================================
+
+Observaciones:
+
+	- Esta prueba es de carácter individual.
+	
+	- De costumbre el código fuente debe ser entregado por medio de Github,
+	  con acceso a su profesor.
+	  
+	- En el campus se debe entregar un documento de tipo texto, con el enlace
+	  al código GitLab y con acceso al dominio de la aplicación web de uso público.
+	  
+	- La prueba tiene una duración máxima de 2 horas y 30 minutos, por lo que debe
+	  entregarse hoy mismo (Lunes 30 de octubre)
+
+
+Que se solicita:
+
+Utilizando el proyecto entregado por su profesor en esta guía, realice los siguientes
+ajustes y agregados.
+
+
+1. Modifique el registro de usuarios de forma que contemple dentro de sus datos:
+
+	- La fecha de creación de la cuenta
+	- La fecha de último acceso al dominio de la aplicación Web.
+	
+	Recuerde que este cambio incluye:
+	
+		- La interface de captura de datos
+		- El código fuente JavaScript
+		- Las reglas de acceso a la coleción
+
+
+2. Modifique la interface del registro del signo zodiacal de forma que incluya:
+
+	- El elemento al que pertenece el signo. [ Fuego | Tierra | Aire | Agua ]
+	- El astro celeste al que está asociado.
+	- La piedra preciosa que ostenta.	
+	
+	Recuerde que este cambio incluye:
+	
+		- La interface de captura de datos
+		- El código fuente JavaScript
+		- Las reglas de acceso a la coleción
+
+
+3. Modifique la tarjeta de presentación de forma que contemple los nuevos datos 
+   registrados, recuerde que esto puede afectar también la hoja de estilos. 
+
+   
+4. Agregue una ventana para modificar los datos del signo zodiacal, la cual debe
+   presentarse cuando el usuario seleccione la tarjeta de su gusto presentada en
+   lista.html
+   
+   Recuerde que este cambio incluye:
+	
+		- Modificar la tarjeta del signo zodiacal para llamar a la página de edición.
+		- La página de edición debe presentar los datos del signo seleccionado.
+		- Deve validar que Las reglas de acceso a la coleción le permitan realizar este proceso.
+	
+   
+5. Las páginas relacionadas con los datos de los signos zodicales, deben modificarse de forma,
+   que después de 3 minutos, si el usuario no ha mostrado movimientos, debe cerrarse la 
+   sesión del usuario.   
